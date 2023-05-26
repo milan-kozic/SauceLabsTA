@@ -105,4 +105,8 @@ public class PropertiesUtils {
     public static String getHubUrl() {
         return getTestProperty("hubUrl");
     }
+
+    public static String getScreenShotsFolder() {
+        return getTestProperty("screenshotsFolder");
+    }
 }

@@ -1,26 +1,54 @@
 package pages;
 
 import data.PageUrlPaths;
-import org.openqa.selenium.By;
+import data.Time;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import utils.PropertiesUtils;
+import org.openqa.selenium.support.FindBy;
+import org.testng.Assert;
 
-public class InventoryPage {
+public class InventoryPage extends BasePageClass {
 
-    private WebDriver driver;
-
-    public final String INVENTORY_PAGE_URL = PropertiesUtils.getBaseUrl() + PageUrlPaths.INVENTORY_PAGE;
+    public final String INVENTORY_PAGE_URL = getPageUrl(PageUrlPaths.INVENTORY_PAGE);
 
     // Locators
-    By inventoryPageTitleLocator = By.xpath("//div[@id='header_container']//span[@class='title']");
+    //By inventoryPageTitleLocator = By.xpath("//div[@id='header_container']//span[@class='title']");
 
+    @FindBy(xpath = "//div[@id='header_container']//span[@class='title']")
+    WebElement inventoryPageTitle;
+
+    // Constructor
     public InventoryPage(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
+    }
+
+    // Open
+    public InventoryPage open() {
+        return open(true);
+    }
+
+    public InventoryPage open(boolean bVerify) {
+        openUrl(INVENTORY_PAGE_URL);
+        if (bVerify) {
+            verifyPage();
+        }
+        return this;
+    }
+
+    public InventoryPage verifyPage() {
+        waitForUrlChange(INVENTORY_PAGE_URL, Time.SHORTER);
+        waitUntilPageIsReady(Time.SHORTER);
+        return this;
+    }
+
+    public boolean isInventoryPageTitleDisplayed() {
+        log.debug("isInventoryPageTitleDisplayed()");
+        return isWebElementDisplayed(inventoryPageTitle);
     }
 
     public String getInventoryPageTitle() {
-        WebElement inventoryPageTitle = driver.findElement(inventoryPageTitleLocator);
-        return inventoryPageTitle.getText();
+        log.debug("getInventoryPageTitle()");
+        Assert.assertTrue(isInventoryPageTitleDisplayed(), "Inventory Page Title is NOT displayed!");
+        return getTextFromWebElement(inventoryPageTitle);
     }
 }

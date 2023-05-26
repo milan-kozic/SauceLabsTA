@@ -1,25 +1,27 @@
 package tests;
 
 import data.CommonStrings;
-import data.PageUrlPaths;
 import data.Time;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.InventoryPage;
 import pages.LoginPage;
-import utils.DateTimeUtils;
-import utils.PropertiesUtils;
-import utils.WebDriverUtils;
+import utils.*;
 
-import java.time.Duration;
+import java.util.Date;
 
-public class DemoTest {
+public class DemoTest extends LoggerUtils {
+
+
+    @Test
+    public void testDate() {
+
+        Date currentDate = DateTimeUtils.getCurrentDateTime();
+        // Monday  MM = 08, MMM = Aug, MMMM = August
+        String sFormattedDate = DateTimeUtils.getFormattedDateTime(currentDate, "EEEE dd-MMMM-yyyy HH:mm:ss zzzz");
+        log.info("DATE: " + sFormattedDate);
+    }
 
     @Test
     public void testSuccessfulLogin() {
@@ -29,11 +31,20 @@ public class DemoTest {
         String sUsername = PropertiesUtils.getUsername();
         String sPassword = PropertiesUtils.getPassword();
 
+        String sTestName = "testSuccessfulLogin";
+
+        boolean bSuccess = false;
+
         try {
+            log.info("Starting Test '" + sTestName + "'");
             driver = WebDriverUtils.setUpDriver();
+
+            Date date = new Date();
 
             LoginPage loginPage = new LoginPage(driver).open();
             DateTimeUtils.wait(Time.DEMONSTRATION);
+
+            // -> Setting Changed
 
             loginPage.typeUsername(sUsername);
             DateTimeUtils.wait(Time.DEMONSTRATION);
@@ -41,23 +52,26 @@ public class DemoTest {
             loginPage.typePassword(sPassword);
             DateTimeUtils.wait(Time.DEMONSTRATION);
 
-            loginPage.clickLoginButton();
+            InventoryPage inventoryPage = loginPage.clickLoginButton();
             DateTimeUtils.wait(Time.DEMONSTRATION);
 
-            WebDriverWait wait3 = new WebDriverWait(driver, Duration.ofSeconds(Time.SHORTER));
-            InventoryPage inventoryPage = new InventoryPage(driver);
-            String sExpectedUrl = inventoryPage.INVENTORY_PAGE_URL;
-            wait3.until(ExpectedConditions.urlToBe(sExpectedUrl));
-            DateTimeUtils.wait(Time.DEMONSTRATION);
+            // -> Document Uploaded
 
             String sActualInventoryPageTitle = inventoryPage.getInventoryPageTitle();
             String sExpectedInventoryPageTitle = CommonStrings.getInventoryPageTitle();
             Assert.assertEquals(sActualInventoryPageTitle, sExpectedInventoryPageTitle, "Wrong Inventory Page Title!");
-
+            bSuccess = true;
 
         } finally {
-            System.out.println("Quit Driver!");
-            WebDriverUtils.quitDriver(driver);
+            log.info("Ending Test '" + sTestName + "'");
+            if(!bSuccess) {
+                log.info("Capturing ScreenShot...");
+                ScreenShotUtils.takeScreenShot(driver, sTestName);
+            }
+
+            // -> Rollback Setting
+            // -> Delete Document
+
         }
     }
 
@@ -67,9 +81,13 @@ public class DemoTest {
         WebDriver driver = null;
         String sUsername = PropertiesUtils.getUsername();
         String sPassword = PropertiesUtils.getPassword() + "!";
+        //String sPassword = PropertiesUtils.getPassword();
+
+        String sTestName = "testUnsuccessfulLoginWrongPassword";
 
         try {
 
+            log.info("Starting Test '" + sTestName + "'");
             driver = WebDriverUtils.setUpDriver();
 
             LoginPage loginPage = new LoginPage(driver).open();
@@ -80,12 +98,7 @@ public class DemoTest {
             loginPage.typePassword(sPassword);
             DateTimeUtils.wait(Time.DEMONSTRATION);
 
-            loginPage.clickLoginButton();
-            DateTimeUtils.wait(Time.DEMONSTRATION);
-
-            WebDriverWait wait3 = new WebDriverWait(driver, Duration.ofSeconds(Time.SHORTER));
-            String sExpectedUrl = loginPage.LOGIN_PAGE_URL;
-            wait3.until(ExpectedConditions.urlToBe(sExpectedUrl));
+            loginPage = loginPage.clickLoginButtonNoProgress();
             DateTimeUtils.wait(Time.DEMONSTRATION);
 
             Assert.assertTrue(loginPage.isErrorMessageDisplayed(), "Error Message is NOT displayed!");
@@ -96,7 +109,8 @@ public class DemoTest {
             Assert.assertEquals(sActualMessage, sExpectedMessage, "Wrong Error Message!");
 
         } finally {
-            System.out.println("Quit Driver!");
+            log.info("Ending Test '" + sTestName + "'");
+            ScreenShotUtils.takeScreenShot(driver, sTestName);
             WebDriverUtils.quitDriver(driver);
         }
     }
