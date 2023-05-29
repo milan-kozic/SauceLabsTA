@@ -26,4 +26,8 @@ public final class CommonStrings {
     public static String getInventoryPageTitle() {
         return getLocaleString("INVENTORY_PAGE_TITLE");
     }
+
+    public static String getDeleteUserErrorMessage(String sUsername, String sFullName) {
+        return getLocaleString("DELETE_USER_MESSAGE").replace("%USERNAME%", sUsername).replace("%FULL_NAME%", sFullName);
+    }
 }

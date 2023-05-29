@@ -1,3 +1,4 @@
 LOGIN_ERROR_WRONG_CREDENTIALS=Epic sadface: Username and password do not match any user in this service
 LOGIN_ERROR_LOCKED_OUT_USER=Epic sadface: Sorry, this user has been locked out.
 INVENTORY_PAGE_TITLE=Products
+DELETE_USER_MESSAGE=Do you really want to delete user %USERNAME% (%FULL_NAME%)?

@@ -107,6 +107,16 @@ public abstract class BasePageClass extends LoggerUtils {
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
+    protected WebElement waitForWebElementToBeVisible(WebElement element, int timeout) {
+        WebDriverWait wait = getWebDriverWaitInstance(timeout);
+        return wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
+    protected boolean waitForWebElementToBeInvisible(WebElement element, int timeout) {
+        WebDriverWait wait = getWebDriverWaitInstance(timeout);
+        return wait.until(ExpectedConditions.invisibilityOf(element));
+    }
+
     protected boolean isWebElementEnabled(WebElement element) {
         try {
             return element.isEnabled();
@@ -121,6 +131,23 @@ public abstract class BasePageClass extends LoggerUtils {
             return webElement != null;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    protected boolean isWebElementVisible(WebElement element, int timeout) {
+        try {
+            WebElement webElement = waitForWebElementToBeVisible(element, timeout);
+            return webElement != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    protected boolean isWebElementInvisible(WebElement element, int timeout) {
+        try {
+            return waitForWebElementToBeInvisible(element, timeout);
+        } catch (Exception e) {
+            return true;
         }
     }
 

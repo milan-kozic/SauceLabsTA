@@ -18,9 +18,32 @@ public class DemoTest extends LoggerUtils {
     public void testDate() {
 
         Date currentDate = DateTimeUtils.getCurrentDateTime();
+        log.info("CURRENT DATE: " + currentDate);
         // Monday  MM = 08, MMM = Aug, MMMM = August
-        String sFormattedDate = DateTimeUtils.getFormattedDateTime(currentDate, "EEEE dd-MMMM-yyyy HH:mm:ss zzzz");
-        log.info("DATE: " + sFormattedDate);
+        String sFormattedDate = DateTimeUtils.getFormattedDateTime(currentDate, "EEE dd-MMM-yyyy HH:mm:ss zzzz");
+        log.info("FORMATTED DATE: " + sFormattedDate);
+        log.info("FORMATTED LOCALE DATE: " + DateTimeUtils.getLocalizedDateTime(currentDate, "EEEE dd-MMMM-yyyy HH:mm:ss zzzz", "fr"));
+
+        String sDateCreated = "26.05.2023. 14:39";
+        Date parsedDate = DateTimeUtils.getParsedDateTime(sDateCreated, "dd.MM.yyyy. HH:mm");
+        log.info("PARSED DATE: " + parsedDate);
+
+        WebDriver driver = WebDriverUtils.setUpDriver();
+        DateTimeUtils.wait(Time.DEMONSTRATION);
+
+        String sBrowserDateTime = DateTimeUtils.getBrowserDateTimeString(driver);
+        log.info("BROWSER DATE STRING: " + sBrowserDateTime);
+
+        Date browserDateTime = DateTimeUtils.getBrowserDateTime(driver);
+        log.info("BROWSER DATE: " + browserDateTime);
+        log.info("BROWSER TIME ZONE A: " + DateTimeUtils.getBrowserTimeZone(driver));
+        log.info("BROWSER TIME ZONE B: " + DateTimeUtils.getBrowserTimeZoneB(driver));
+        WebDriverUtils.quitDriver(driver);
+
+        String sFullBrowserDateTime = sDateCreated + " " + "PDT";
+        browserDateTime = DateTimeUtils.getParsedDateTime(sFullBrowserDateTime, "dd.MM.yyyy. HH:mm zzz");
+        log.info("REAL BROWSER DATE TIME: " + browserDateTime);
+
     }
 
     @Test
