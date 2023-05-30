@@ -5,6 +5,7 @@ import data.Time;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pages.DemoPage;
 import pages.InventoryPage;
 import pages.LoginPage;
 import utils.*;
@@ -13,6 +14,67 @@ import java.util.Date;
 
 public class DemoTest extends LoggerUtils {
 
+    @Test
+    public void testDemoPage() {
+
+        WebDriver driver = null;
+        try {
+            driver = WebDriverUtils.setUpDriver();
+
+            DemoPage demoPage = new DemoPage(driver).open();
+            DateTimeUtils.wait(Time.SHORT);
+
+
+            /*
+            log.info("CHECKBOX: " + demoPage.isExampleCheckboxChecked());
+            demoPage.checkExampleCheckbox();
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+            log.info("CHECKBOX: " + demoPage.isExampleCheckboxChecked());
+
+
+            demoPage.checkExampleCheckbox();
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+            log.info("CHECKBOX: " + demoPage.isExampleCheckboxChecked());
+
+            demoPage.uncheckExampleCheckbox();
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+            log.info("CHECKBOX: " + demoPage.isExampleCheckboxChecked());
+
+            demoPage.uncheckExampleCheckbox();
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+            log.info("CHECKBOX: " + demoPage.isExampleCheckboxChecked());
+
+            demoPage.checkExampleCheckbox();
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+            log.info("CHECKBOX: " + demoPage.isExampleCheckboxChecked());
+            */
+
+            /*
+            log.info("DEFAULT SELECTED OPTION: " + demoPage.getSelectedOptionFromDropDownMenu());
+            demoPage.selectOptionFromDropDownMenu("June");
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+
+            log.info("SELECTED OPTION: " + demoPage.getSelectedOptionFromDropDownMenu());
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+
+            demoPage.selectOptionFromDropDownMenu("Wrong");
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+
+            log.info("SELECTED OPTION: " + demoPage.getSelectedOptionFromDropDownMenu());
+             */
+
+            //demoPage.selectRadioGroupOption("FeMale");
+
+            //demoPage.dragAndDropBox();
+
+            demoPage.moveBox(100, 25);
+
+            DateTimeUtils.wait(Time.SHORT);
+
+        } finally {
+            WebDriverUtils.quitDriver(driver);
+        }
+    }
 
     @Test
     public void testDate() {

@@ -1,20 +1,24 @@
 package pages;
 
 import data.Time;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
 import utils.LoggerUtils;
 import utils.PropertiesUtils;
 import utils.WebDriverUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.Duration;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
@@ -134,6 +138,14 @@ public abstract class BasePageClass extends LoggerUtils {
         }
     }
 
+    protected boolean isWebElementSelected(WebElement element) {
+        try {
+            return element.isSelected();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     protected boolean isWebElementVisible(WebElement element, int timeout) {
         try {
             WebElement webElement = waitForWebElementToBeVisible(element, timeout);
@@ -218,4 +230,44 @@ public abstract class BasePageClass extends LoggerUtils {
         WebDriverWait wait = getWebDriverWaitInstance(timeout);
         return wait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
     }
+
+    // link = 18.219.75.209:8080/users/files/allUsers
+    protected File downloadFile(WebDriver driver, String link, String sFullPathToFile) {
+        File targetFile = null;
+        try {
+            URL url = new URL(link);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            String sCookies = WebDriverUtils.getCookies(driver);
+            urlConnection.addRequestProperty("Cookie", sCookies);
+            InputStream inputStream = urlConnection.getInputStream();
+            targetFile = new File(sFullPathToFile);
+            FileUtils.copyInputStreamToFile(inputStream, targetFile);
+        } catch (IOException e) {
+            Assert.fail("File from link '" + link + "' cannot be downloaded. Message: " + e.getMessage());
+        }
+        return targetFile;
+    }
+
+    protected String getFirstSelectedOptionOnWebElement(WebElement element) {
+        Select select = new Select(element);
+        WebElement option = select.getFirstSelectedOption();
+        return option.getText();
+    }
+
+    protected void selectOptionOnWebElement(WebElement element, String option) {
+        Select select = new Select(element);
+        select.selectByVisibleText(option);
+    }
+
+    protected void doDragAndDrop(WebElement source, WebElement destination) {
+        Actions action = new Actions(driver);
+        action.dragAndDrop(source, destination).perform();
+    }
+
+    protected void doDragAndDropBy(WebElement source, int xOffset, int yOffset) {
+        Actions action = new Actions(driver);
+        action.dragAndDropBy(source, xOffset, yOffset).perform();
+    }
+
 }
