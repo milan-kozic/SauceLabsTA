@@ -80,8 +80,20 @@ public class PropertiesUtils {
         return getTestProperty("username");
     }
 
+    public static String getAdminUsername() {
+        return getTestProperty("adminUsername");
+    }
+
     public static String getPassword() {
         return getTestProperty("password");
+    }
+
+    public static String getAdminPassword() {
+        return getTestProperty("adminPassword");
+    }
+
+    public static String getDefaultPassword() {
+        return getTestProperty("defaultPassword");
     }
 
     public static boolean getRemote() {

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Duration;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
@@ -69,6 +70,21 @@ public abstract class BasePageClass extends LoggerUtils {
         return element;
     }
 
+    protected WebElement getNestedWebElement(WebElement element, By locator) {
+        log.trace("getNestedWebElement(" + element + ", " + locator + ")");
+        return element.findElement(locator);
+    }
+
+    protected WebElement getNestedWebElement(WebElement element, By locator, int timeout) {
+        log.trace("getNestedWebElement(" + element + ", " + locator + ", " + timeout + ")");
+        WebDriverWait wait = getWebDriverWaitInstance(timeout);
+        return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(element, locator));
+    }
+
+    protected List<WebElement> getWebElements(By locator) {
+        return driver.findElements(locator);
+    }
+
     protected boolean isWebElementDisplayed(By locator) {
         try {
             WebElement element = getWebElement(locator);
@@ -103,6 +119,15 @@ public abstract class BasePageClass extends LoggerUtils {
             return false;
         } finally {
             WebDriverUtils.setImplicitWait(driver, Time.IMPLICIT_WAIT);
+        }
+    }
+
+    protected boolean isNestedWebElementDisplayed(WebElement element, By locator) {
+        try {
+            WebElement nestedWebElement = getNestedWebElement(element, locator);
+            return nestedWebElement.isDisplayed();
+        } catch (Exception e) {
+            return false;
         }
     }
 

@@ -2,6 +2,8 @@ package tests;
 
 import data.CommonStrings;
 import data.Time;
+import objects.ApiError;
+import objects.User;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -15,6 +17,41 @@ import java.util.Date;
 public class DemoTest extends LoggerUtils {
 
     @Test
+    public void testRestApi() {
+
+        //log.info("USER EXISTS: " + RestApiUtils.checkIfUserExists("zgembo"));
+        //String sResult = RestApiUtils.getUserJsonFormat("zgembo");
+        //log.info(sResult);
+
+        /*
+        User user = RestApiUtils.getUser("zgembo");
+        log.info(user);
+        log.info("");
+        ApiError error = RestApiUtils.getUserError("fnfdkjsnfdks");
+        log.info(error);
+        log.info("ERROR MESSAGE: " + error.getMessage());
+         */
+
+        User newUser = User.createNewUniqueUser("NewUser");
+        log.info(newUser);
+        log.info("USER EXISTS? "  + RestApiUtils.checkIfUserExists(newUser.getUsername()));
+
+        RestApiUtils.postUser(newUser);
+
+        log.info("USER EXISTS? "  + RestApiUtils.checkIfUserExists(newUser.getUsername()));
+
+        User userFromDatabase = RestApiUtils.getUser(newUser.getUsername());
+        log.info(userFromDatabase);
+
+        RestApiUtils.deleteUser(newUser.getUsername());
+        log.info("USER EXISTS? "  + RestApiUtils.checkIfUserExists(newUser.getUsername()));
+
+        ApiError error = RestApiUtils.deleteUserError(newUser.getUsername());
+        log.info(error);
+
+
+    }
+    @Test
     public void testDemoPage() {
 
         WebDriver driver = null;
@@ -23,6 +60,9 @@ public class DemoTest extends LoggerUtils {
 
             DemoPage demoPage = new DemoPage(driver).open();
             DateTimeUtils.wait(Time.SHORT);
+
+            //UsersPage usersPage = new UsersPage(driver);
+            //usersPage.clickUserDetails("dedoje");
 
 
             /*
@@ -156,6 +196,60 @@ public class DemoTest extends LoggerUtils {
 
             // -> Rollback Setting
             // -> Delete Document
+            WebDriverUtils.quitDriver(driver);
+        }
+    }
+
+    @Test
+    public void testInventoryItems() {
+
+        WebDriver driver = null;
+
+        String sUsername = PropertiesUtils.getUsername();
+        String sPassword = PropertiesUtils.getPassword();
+
+        String sTestName = "testInventoryItems";
+
+        boolean bSuccess = false;
+
+        try {
+            log.info("Starting Test '" + sTestName + "'");
+            driver = WebDriverUtils.setUpDriver();
+
+            Date date = new Date();
+
+            LoginPage loginPage = new LoginPage(driver).open();
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+
+            // -> Setting Changed
+
+            InventoryPage inventoryPage = loginPage.login(sUsername, sPassword);
+            DateTimeUtils.wait(Time.DEMONSTRATION);
+
+            log.info("NUMBER OF ITEMS: " + inventoryPage.getNumberOfInventoryItems());
+
+            String sItemName = "Sauce Labs Bike Light";
+            log.info("IS ITEM PRESENT: " + inventoryPage.isItemPresentInInventoryList(sItemName));
+
+            log.info("ITEM DESCRIPTION: " + inventoryPage.getItemDescriptionInInventoryList(sItemName));
+            log.info("ITEM PRICE: " + inventoryPage.getItemPriceInInventoryList(sItemName));
+            log.info("BUTTON TITLE: " + inventoryPage.getAddToCartButtonTitle(sItemName));
+
+            inventoryPage.clickAddToCartButton(sItemName);
+            DateTimeUtils.wait(Time.SHORT);
+
+            bSuccess = true;
+
+        } finally {
+            log.info("Ending Test '" + sTestName + "'");
+            if(!bSuccess) {
+                log.info("Capturing ScreenShot...");
+                ScreenShotUtils.takeScreenShot(driver, sTestName);
+            }
+
+            // -> Rollback Setting
+            // -> Delete Document
+            WebDriverUtils.quitDriver(driver);
 
         }
     }
