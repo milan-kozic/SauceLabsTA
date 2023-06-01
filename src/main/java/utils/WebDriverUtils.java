@@ -27,9 +27,9 @@ public class WebDriverUtils extends LoggerUtils {
         boolean bHeadless = PropertiesUtils.getHeadless();
         String sHubUrl = PropertiesUtils.getHubUrl();
 
-        String sChromeDriverPath = "C:\\Selenium\\chromedriver.exe";
-        String sFirefoxDriverPath = "C:\\Selenium\\geckodriver.exe";
-        String sEdgeDriverPath = "C:\\Selenium\\msedgedriver.exe";
+        //String sChromeDriverPath = "C:\\Selenium\\chromedriver2.exe";
+        //String sFirefoxDriverPath = "C:\\Selenium\\geckodriver.exe";
+        //String sEdgeDriverPath = "C:\\Selenium\\msedgedriver.exe";
 
         WebDriver driver = null;
 
@@ -39,6 +39,7 @@ public class WebDriverUtils extends LoggerUtils {
             switch (sBrowser) {
                 case "chrome" : {
                     ChromeOptions options = new ChromeOptions();
+                    //options.addArguments("--remote-allow-origins=*");
                     if(bHeadless) {
                         //options.setHeadless(true);
                         options.addArguments("--headless");

@@ -5,11 +5,11 @@
 <!-- parallel="classes" - TestNG will run all the methods in the same class in the same thread, but each class will be run in a separate thread.-->
 <!-- parallel="tests" - TestNG will run all the methods in the same <test> tag in the same thread, but each <test> tag will be in a separate thread.-->
 <!-- parallel="instances" -  TestNG will run all the methods in the same instance in the same thread, but two methods on two different instances will be running in different threads.-->
-<suite name="Regression Suite" parallel="methods" thread-count="4">
-    <test name="Regression Tests">
+<suite name="Evaluation Suite" parallel="methods" thread-count="4">
+    <test name="Evaluation Tests">
         <groups>
             <run>
-                <include name="regression"/>
+                <include name="evaluation"/>
                 <exclude name="broken"/>
                 <exclude name="deprecated"/>
                 <exclude name="bugs"/>

@@ -1,6 +1,7 @@
 package tests.login;
 
 import data.CommonStrings;
+import data.Groups;
 import data.Time;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -9,13 +10,12 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.InventoryPage;
 import pages.LoginPage;
 import tests.BaseTestClass;
 import utils.DateTimeUtils;
 import utils.PropertiesUtils;
-import utils.WebDriverUtils;
 
+@Test(groups = {Groups.REGRESSION, Groups.LOGIN})
 public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
 
     private final String sTestName = this.getClass().getName();
@@ -28,7 +28,7 @@ public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
 
     @BeforeMethod
     public void setUpTest(ITestContext testContext) {
-        log.info("[SETUP TEST " + sTestName);
+        log.info("[SETUP TEST] " + sTestName);
         driver = setUpDriver();
     }
 
@@ -57,7 +57,7 @@ public class UnsuccessfulLoginWrongPassword extends BaseTestClass {
 
     @AfterMethod(alwaysRun = true)
     public void tearDownTest(ITestResult testResult) {
-        log.info("END TEST] " + sTestName);
+        log.info("[END TEST] " + sTestName);
         tearDown(driver, testResult);
     }
 }

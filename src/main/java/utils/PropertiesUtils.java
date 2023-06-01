@@ -30,11 +30,19 @@ public class PropertiesUtils {
     }
 
     public static String getBrowser() {
-        return getTestProperty("browser");
+        String sBrowser = System.getProperty("browser");
+        if (sBrowser == null) {
+            sBrowser = getTestProperty("browser");
+        }
+        return sBrowser;
     }
 
     public static String getEnvironment() {
-        return getTestProperty("environment");
+        String sEnvironment = System.getProperty("environment");
+        if (sEnvironment == null) {
+            sEnvironment = getTestProperty("environment");
+        }
+        return sEnvironment;
     }
 
     public static String getLocale() {
@@ -97,7 +105,10 @@ public class PropertiesUtils {
     }
 
     public static boolean getRemote() {
-        String sRemote = getTestProperty("remote");
+        String sRemote = System.getProperty("remote");
+        if (sRemote == null) {
+            sRemote = getTestProperty("remote");
+        }
         sRemote = sRemote.toLowerCase();
         if(!(sRemote.equals("true") || sRemote.equals("false"))) {
             Assert.fail("Cannot convert 'Remote' property value '" + sRemote + "' to boolean!");
@@ -106,7 +117,10 @@ public class PropertiesUtils {
     }
 
     public static boolean getHeadless() {
-        String sHeadless = getTestProperty("headless");
+        String sHeadless = System.getProperty("headless");
+        if (sHeadless == null) {
+            sHeadless = getTestProperty("headless");
+        }
         sHeadless = sHeadless.toLowerCase();
         if(!(sHeadless.equals("true") || sHeadless.equals("false"))) {
             Assert.fail("Cannot convert 'Headless' property value '" + sHeadless + "' to boolean!");
